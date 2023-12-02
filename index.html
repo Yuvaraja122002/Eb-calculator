@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    .calculator {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="number"],
+    button {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #result,
+    #calculationSteps {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="calculator">
+    <h1>Electricity Bill Calculator</h1>
+    <label for="unitsInput">Enter units:</label>
+    <input type="number" id="unitsInput" placeholder="Enter units" />
+    <button onclick="calculate()">Calculate</button>
+    <div id="result"></div>
+    <div id="calculationSteps"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      var units = parseFloat(document.getElementById('unitsInput').value);
+      if (!isNaN(units)) {
+        var tier1Limit = 100;
+        var tier2Limit = 200;
+        var tier3Limit = 400;
+        var tier4Limit = 500;
+        var tier5Limit = 600; // New tier limit
+        var tier6Limit = 800; // New tier limit
+        var tier7Limit = 800; // New tier limit
+        var tier8Limit = 1000; // New tier limit
+
+        var rateTier1 = 0;   // Rate for 1 to 100 units
+        var rateTier2 = 2.25; // Rate for 101 to 200 units
+        var rateTier3 = 4.5;  // Rate for 201 to 400 units
+        var rateTier4 = 6;    // Rate for 401 to 500 units
+        var rateTier5 = 8;    // Rate for 501 to 600 units
+        var rateTier6 = 9;    // Rate for 601 to 800 units
+        // var rateTier6 = 10;   // Rate for 701 to 800 units
+        var rateTier8 = 10;   // Rate for 801 to 1000 units
+        var rateTier9 = 11;   // Rate for above 1000 units
+
+        var totalBill = 0;
+        var calculationSteps = "";
+
+        if (units <= tier1Limit) {
+          totalBill = units * rateTier1;
+          calculationSteps = `<div style="text-align: center;">For the first 100 units: ₹${totalBill.toFixed(2)} (No charge)</div>`;
+        } else if (units > tier1Limit && units <= tier2Limit) {
+          totalBill = (tier1Limit * rateTier1) + ((units - tier1Limit) * rateTier2);
+          calculationSteps = `<div style="text-align: center;">For the first 100 units: ₹${(tier1Limit * rateTier1).toFixed(2)} (No charge)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(units - tier1Limit)} units: ₹${((units - tier1Limit) * rateTier2).toFixed(2)} (₹${rateTier2} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;"><br><b>Total Charges: ₹${totalBill.toFixed(2)}</b></div>`;
+        } else if (units > tier2Limit && units <= tier3Limit) {
+          totalBill = (tier1Limit * rateTier1) + ((tier2Limit - tier1Limit) * rateTier2) + ((units - tier2Limit) * rateTier3);
+          calculationSteps = `<div style="text-align: center;">For the first 100 units: ₹${(tier1Limit * rateTier1).toFixed(2)} (No charge)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier2Limit - tier1Limit)} units: ₹${((tier2Limit - tier1Limit) * rateTier2).toFixed(2)} (₹${rateTier2} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(units - tier2Limit)} units: ₹${((units - tier2Limit) * rateTier3).toFixed(2)} (₹${rateTier3} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;"><br><b>Total Charges: ₹${totalBill.toFixed(2)}</b></div>`;
+        } else if (units > tier3Limit && units <= tier4Limit) {
+          totalBill = (tier1Limit * rateTier1) + ((tier2Limit - tier1Limit) * rateTier2) + ((tier3Limit - tier2Limit) * rateTier3) + ((units - tier3Limit) * rateTier4);
+          calculationSteps = `<div style="text-align: center;">For the first 100 units: ₹${(tier1Limit * rateTier1).toFixed(2)} (No charge)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier2Limit - tier1Limit)} units: ₹${((tier2Limit - tier1Limit) * rateTier2).toFixed(2)} (₹${rateTier2} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier3Limit - tier2Limit)} units: ₹${((tier3Limit - tier2Limit) * rateTier3).toFixed(2)} (₹${rateTier3} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(units - tier3Limit)} units: ₹${((units - tier3Limit) * rateTier4).toFixed(2)} (₹${rateTier4} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;"><br><b>Total Charges: ₹${totalBill.toFixed(2)}</b></div>`;
+        } else if (units > tier4Limit && units <= tier5Limit) {
+          totalBill = (tier1Limit * rateTier1) + ((tier2Limit - tier1Limit) * rateTier2) + ((tier3Limit - tier2Limit) * rateTier3) + ((tier4Limit - tier3Limit) * rateTier4) + ((units - tier4Limit) * rateTier5);
+          calculationSteps = `<div style="text-align: center;">For the first 100 units: ₹${(tier1Limit * rateTier1).toFixed(2)} (No charge)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier2Limit - tier1Limit)} units: ₹${((tier2Limit - tier1Limit) * rateTier2).toFixed(2)} (₹${rateTier2} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier3Limit - tier2Limit)} units: ₹${((tier3Limit - tier2Limit) * rateTier3).toFixed(2)} (₹${rateTier3} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier4Limit - tier3Limit)} units: ₹${((tier4Limit - tier3Limit) * rateTier4).toFixed(2)} (₹${rateTier4} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(units - tier4Limit)} units: ₹${((units - tier4Limit) * rateTier5).toFixed(2)} (₹${rateTier5} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;"><br><b>Total Charges: ₹${totalBill.toFixed(2)}</b></div>`;
+        } else if (units > tier5Limit && units <= tier6Limit) {
+          totalBill = (tier1Limit * rateTier1) + ((tier2Limit - tier1Limit) * rateTier2) + ((tier3Limit - tier2Limit) * rateTier3) + ((tier4Limit - tier3Limit) * rateTier4) + ((tier5Limit - tier4Limit) * rateTier5) + ((tier6Limit - tier5Limit) * rateTier6) + ((units - tier6Limit) * rateTier6);
+          calculationSteps = `<div style="text-align: center;">For the first 100 units: ₹${(tier1Limit * rateTier1).toFixed(2)} (No charge)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier2Limit - tier1Limit)} units: ₹${((tier2Limit - tier1Limit) * rateTier2).toFixed(2)} (₹${rateTier2} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier3Limit - tier2Limit)} units: ₹${((tier3Limit - tier2Limit) * rateTier3).toFixed(2)} (₹${rateTier3} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier4Limit - tier3Limit)} units: ₹${((tier4Limit - tier3Limit) * rateTier4).toFixed(2)} (₹${rateTier4} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier5Limit - tier4Limit)} units: ₹${((tier5Limit - tier4Limit) * rateTier5).toFixed(2)} (₹${rateTier5} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(units - tier5Limit)} units: ₹${((units - tier5Limit) * rateTier6).toFixed(2)} (₹${rateTier6} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;"><br><b>Total Charges: ₹${totalBill.toFixed(2)}</b></div>`;
+        } else if (units > tier6Limit && units <= tier7Limit) {
+          totalBill = (tier1Limit * rateTier1) +
+            ((tier2Limit - tier1Limit) * rateTier2) +
+            ((tier3Limit - tier2Limit) * rateTier3) +
+            ((tier4Limit - tier3Limit) * rateTier4) +
+            ((tier5Limit - tier4Limit) * rateTier5) +
+            ((tier6Limit - tier5Limit) * rateTier6) +
+            ((units - tier6Limit) * rateTier6);
+
+          calculationSteps = `<div style="text-align: center;">For the first 100 units: ₹${(tier1Limit * rateTier1).toFixed(2)} (No charge)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier2Limit - tier1Limit)} units: ₹${((tier2Limit - tier1Limit) * rateTier2).toFixed(2)} (₹${rateTier2} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier3Limit - tier2Limit)} units: ₹${((tier3Limit - tier2Limit) * rateTier3).toFixed(2)} (₹${rateTier3} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier4Limit - tier3Limit)} units: ₹${((tier4Limit - tier3Limit) * rateTier4).toFixed(2)} (₹${rateTier4} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier5Limit - tier4Limit)} units: ₹${((tier5Limit - tier4Limit) * rateTier5).toFixed(2)} (₹${rateTier5} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier6Limit - tier5Limit)} units: ₹${((tier6Limit - tier5Limit) * rateTier6).toFixed(2)} (₹${rateTier6} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(units - tier6Limit)} units: ₹${((units - tier6Limit) * rateTier6).toFixed(2)} (₹${rateTier6} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;"><br><b>Total Charges: ₹${totalBill.toFixed(2)}</b></div>`;
+        } else if (units > tier7Limit && units <= tier8Limit) {
+          totalBill = (tier1Limit * rateTier1) +
+            ((tier2Limit - tier1Limit) * rateTier2) +
+            ((tier3Limit - tier2Limit) * rateTier3) +
+            ((tier4Limit - tier3Limit) * rateTier4) +
+            ((tier5Limit - tier4Limit) * rateTier5) +
+            ((tier6Limit - tier5Limit) * rateTier6) +
+            ((tier7Limit - tier6Limit) * rateTier6) +
+            ((units - tier7Limit) * rateTier8);
+
+          calculationSteps = `<div style="text-align: center;">For the first 100 units: ₹${(tier1Limit * rateTier1).toFixed(2)} (No charge)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier2Limit - tier1Limit)} units: ₹${((tier2Limit - tier1Limit) * rateTier2).toFixed(2)} (₹${rateTier2} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier3Limit - tier2Limit)} units: ₹${((tier3Limit - tier2Limit) * rateTier3).toFixed(2)} (₹${rateTier3} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier4Limit - tier3Limit)} units: ₹${((tier4Limit - tier3Limit) * rateTier4).toFixed(2)} (₹${rateTier4} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier5Limit - tier4Limit)} units: ₹${((tier5Limit - tier4Limit) * rateTier5).toFixed(2)} (₹${rateTier5} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier6Limit - tier5Limit)} units: ₹${((tier6Limit - tier5Limit) * rateTier6).toFixed(2)} (₹${rateTier6} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(tier7Limit - tier6Limit)} units: ₹${((tier7Limit - tier6Limit) * rateTier6).toFixed(2)} (₹${rateTier6} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;">For the next ${(units - tier7Limit)} units: ₹${((units - tier7Limit) * rateTier8).toFixed(2)} (₹${rateTier8} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;"><br><b>Total Charges: ₹${totalBill.toFixed(2)}</b></div>`;
+        } else if (units > tier8Limit) {
+          totalBill = (tier1Limit * rateTier1) +
+            ((tier2Limit - tier1Limit) * rateTier2) +
+            ((tier3Limit - tier2Limit) * rateTier3) +
+            ((tier4Limit - tier3Limit) * rateTier4) +
+            ((tier5Limit - tier4Limit) * rateTier5) +
+            ((tier6Limit - tier5Limit) * rateTier6) +
+            ((tier7Limit - tier6Limit) * rateTier6) +
+            ((tier8Limit - tier7Limit) * rateTier8) +
+            ((units - tier8Limit) * rateTier9);
+
+          // Calculation steps for each tier
+          calculationSteps = `<div style="text-align: center;">For the first 100 units: ₹${(tier1Limit * rateTier1).toFixed(2)} (No charge)</div>`;
+          // Append calculation steps for other tiers...
+
+          // Append calculation steps for above 1000 units
+          calculationSteps += `<div style="text-align: center;">For the next ${(units - tier8Limit)} units: ₹${((units - tier8Limit) * rateTier9).toFixed(2)} (₹${rateTier9} per unit)</div>`;
+          calculationSteps += `<div style="text-align: center;"><br><b>Total Charges: ₹${totalBill.toFixed(2)}</b></div>`;
+        }
+
+        document.getElementById('result').innerHTML = `Your electricity bill is ₹${totalBill.toFixed(2)}`;
+        document.getElementById('calculationSteps').innerHTML = calculationSteps;
+        document.getElementById('calculationSteps').style.display = 'block';
+      } else {
+        document.getElementById('result').innerHTML = 'Please enter a valid number of units to calculate.';
+        document.getElementById('calculationSteps').style.display = 'none';
+      }
+    }
+
+  </script>
+</body>
+
+</html>
